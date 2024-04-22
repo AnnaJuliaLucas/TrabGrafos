@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "algorithm": "cpp",
+        "aresta.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "grafo.h": "c",
+        "defines.h": "c",
+        "string.h": "c",
+        "no.h": "c"
+    }
+}
