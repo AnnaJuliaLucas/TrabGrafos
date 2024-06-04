@@ -29,6 +29,14 @@ void menu(Grafo *grafo){
             fecho_transitivo_direto(grafo, vertice);
             break;
         }
+        case 'b': {
+            printf("      Opcao escolhida: FECHO TRANSITIVO INDIRETO \n");
+            printf("\nEscolha um vertice: ");
+            int vertice;
+            scanf("%d", &vertice);
+            fecho_transitivo_indireto(grafo, vertice);
+            break;
+        }
         default:
             printf("Opcao invalida.\n");
     }
@@ -57,7 +65,7 @@ void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *dir
     // Abre o arquivo de instância
     FILE *input_file = fopen(caminho_arquivo, "r");
     if (input_file == NULL) {
-        printf("Erro ao abrir o arquivo de instância.\n");
+        printf("Erro ao abrir o arquivo de instancia.\n");
         return;
     }
 
@@ -69,7 +77,7 @@ void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *dir
         printf("Direcionado\n");
     } else {
         grafo->direcionado = 0;
-        printf("Não direcionado\n");
+        printf("Nao direcionado\n");
     }
     
     printf("ARESTAS: ");

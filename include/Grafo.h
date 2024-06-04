@@ -32,7 +32,10 @@ int conectado(Grafo *grafo, size_t id_no_1, size_t id_no_2);
 void inicializa_graus(Grafo *grafo);
 No *encontrar_no_por_id(Grafo *grafo, unsigned int id);
 void busca_prof(Grafo *grafo);
-void busca_prof_visit(Grafo *grafo, No *no);
+void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados);
+void busca_prof_visit_inversa(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados);
 void fecho_transitivo_direto(Grafo *grafo, unsigned int u);
+void fecho_transitivo_indireto(Grafo *grafo, unsigned int u);
+int comparar(const void *a, const void *b);
 
 #endif  // GRAFO_H

@@ -2,9 +2,9 @@
 #include "../include/defines.h"
 #include "../include/No.h"
 
-// ========================================================================================================================
-//                                        ESTRUTURA BÁSICA DE UM GRAFO
-// ========================================================================================================================
+// =============================================================================================================================================================================
+//                                                                            ESTRUTURA BÁSICA DE UM GRAFO
+// =============================================================================================================================================================================
 
 /*======================================================
 *           CONSTRUTOR INSTÂNCIA
@@ -30,8 +30,13 @@ void inicializar_grafo_com_arquivo(Grafo *grafo, FILE *instance) {
         {
             sscanf(linha, "%d", &(grafo->numero_de_nos));
         } else {
-            printf("Erro ao LER o nº total de nós!\n");
+            printf("Erro ao LER o nº total de nos!\n");
             return;
+        }
+
+        for(unsigned int i = 1; i <= grafo->numero_de_nos; i++)
+        {
+            adicionar_no(grafo, i, 0);
         }
 
         // Enquanto houver linhas no arquivo
@@ -44,24 +49,28 @@ void inicializar_grafo_com_arquivo(Grafo *grafo, FILE *instance) {
             if(grafo->arestas_ponderadas == 1)
             {
                 if (sscanf(linha, "%d %d %f", &id_no_1, &id_no_2, &peso) != 3) {
-                    printf("Erro ao LER o arquivo de instância\n");
+                    printf("Erro ao LER o arquivo de instancia\n");
                     break;
                 }
 
                 // Adiciona os nós e as arestas no grafo
-                adicionar_no(grafo, id_no_1, 0);
-                adicionar_no(grafo, id_no_2, 0);
                 adicionar_aresta(grafo, id_no_1, id_no_2, peso);
+
+                if (grafo->direcionado == 0){
+                    adicionar_aresta(grafo, id_no_2, id_no_1, peso);
+                } 
             } else {
                 if (sscanf(linha, "%d %d", &id_no_1, &id_no_2) != 2) {
-                    printf("Erro ao LER o arquivo de instância\n");
+                    printf("Erro ao LER o arquivo de instancia\n");
                     break;
                 }
 
                 // Adiciona os nós e as arestas no grafo
-                adicionar_no(grafo, id_no_1, 0);
-                adicionar_no(grafo, id_no_2, 0);
                 adicionar_aresta(grafo, id_no_1, id_no_2, 0);
+
+                if (grafo->direcionado == 0){
+                    adicionar_aresta(grafo, id_no_2, id_no_1, 0);
+                } 
             }
         }
 
@@ -69,10 +78,8 @@ void inicializar_grafo_com_arquivo(Grafo *grafo, FILE *instance) {
         //inicializa_graus(grafo); 
         //printf("Graus de entrada: %d", grafo->adj[0]->grau_entrada);
 
-        
-
     } else {
-        printf("Erro ao ABRIR o arquivo de instância\n");
+        printf("Erro ao ABRIR o arquivo de instancia\n");
     }
 }
 
@@ -196,7 +203,7 @@ void adicionar_aresta(Grafo *grafo, size_t id_no_1, size_t id_no_2, float peso)
     
     if (nova_aresta == NULL) 
     {
-        printf("Erro ao alocar memória para a nova aresta\n");
+        printf("Erro ao alocar memoria para a nova aresta\n");
         return;
     }
 
@@ -297,11 +304,15 @@ void imprimir_grafo(Grafo *grafo)
                 // Percorre todas as arestas do nó atual
                 while (aresta_atual != NULL) {
                     // Imprime o ID do nó de origem e as informações da aresta
-                    printf(" -> (%d, %.f)", aresta_atual->id_alvo, aresta_atual->peso);
+                    if (grafo->direcionado == 0){
+                        printf(" - (%d, %.f)", aresta_atual->id_alvo, aresta_atual->peso);
+                    } else {
+                        printf(" -> (%d, %.f)", aresta_atual->id_alvo, aresta_atual->peso);
+                    }
                     aresta_atual = aresta_atual->prox_aresta;
                 }
             } else {
-                printf(" -|\n");
+                printf(" -|");
             }
 
             printf("\n");
@@ -332,6 +343,7 @@ void imprimir_grafo(Grafo *grafo)
     }
 }
 
+
 /*====================================================== 
 *           IMPRIMIR GRAFO EM ARQUIVO
 ---------------------------------------------------------
@@ -350,40 +362,48 @@ void imprimir_grafo_em_arquivo(Grafo *grafo, FILE *output_file)
 
     No *no_atual = grafo->primeiro;
 
-    if(grafo->direcionado == 1)
-    {
+    if (grafo->arestas_ponderadas == 1) {
         // Enquanto houver nós no grafo
         while (no_atual != NULL) {
-            fprintf(output_file, "|%d|\n", no_atual->id);
+            fprintf(output_file, "|%d|", no_atual->id);  // Imprime o id do nó - Lista encadeada de nós
 
-            if (no_atual->primeira_aresta == NULL) {
-                fprintf(output_file, " -|\n");
-            } else {
+            if (no_atual->primeira_aresta != NULL) {
                 Aresta *aresta_atual = no_atual->primeira_aresta;
 
+                // Percorre todas as arestas do nó atual
                 while (aresta_atual != NULL) {
-                    fprintf(output_file, "-> %d , %.2f", aresta_atual->id_alvo, aresta_atual->peso);
+                    // Imprime o ID do nó de origem e as informações da aresta
+                    if (grafo->direcionado == 0) {
+                        fprintf(output_file, " - (%d, %.f)", aresta_atual->id_alvo, aresta_atual->peso);
+                    } else {
+                        fprintf(output_file, " -> (%d, %.f)", aresta_atual->id_alvo, aresta_atual->peso);
+                    }
                     aresta_atual = aresta_atual->prox_aresta;
                 }
+            } else {
+                fprintf(output_file, " -|");
             }
+
             fprintf(output_file, "\n");
             no_atual = no_atual->proximo_no;
         }
     } else {
         // Enquanto houver nós no grafo
         while (no_atual != NULL) {
-            fprintf(output_file, "|%d|", no_atual->id);
+            fprintf(output_file, "|%d|", no_atual->id);  // Imprime o id do nó - Lista encadeada de nós
 
-            if (no_atual->primeira_aresta == NULL) {
-                fprintf(output_file, " -|");
-            } else {
+            if (no_atual->primeira_aresta != NULL) {
                 Aresta *aresta_atual = no_atual->primeira_aresta;
-
+                // Percorre todas as arestas do nó atual
                 while (aresta_atual != NULL) {
-                    fprintf(output_file, "- %d", aresta_atual->id_alvo);
+                    // Imprime o ID do nó de origem e as informações da aresta
+                    fprintf(output_file, " - (%d)", aresta_atual->id_alvo);
                     aresta_atual = aresta_atual->prox_aresta;
                 }
+            } else {
+                fprintf(output_file, " -|");
             }
+
             fprintf(output_file, "\n");
             no_atual = no_atual->proximo_no;
         }
@@ -406,9 +426,18 @@ void imprimir_grafo_em_arquivo(Grafo *grafo, FILE *output_file)
 // }
 
 
-// ========================================================================================================================
+// =============================================================================================================================================================================
 //                                       ESTRUTURA COMPLEMENTAR DE UM GRAFO
-// ========================================================================================================================
+// =============================================================================================================================================================================
+
+/*====================================================== 
+*               ENCONTRAR NÓ POR ID
+---------------------------------------------------------
+* Função: Encontra um nó no grafo a partir de um id
+* Parametros: grafo - ponteiro para o grafo
+*             id - id do nó
+* Retorno: ponteiro para o nó encontrado
+======================================================*/
 No *encontrar_no_por_id(Grafo *grafo, unsigned int id) {
     No *tmp_iterator = grafo->primeiro;
     while (tmp_iterator != NULL) {
@@ -461,15 +490,18 @@ void inicializa_graus(Grafo *grafo)
         tmp_iterator = tmp_iterator->proximo_no;
     }
 
-    // Agora que os graus foram calculados para todos os nós, vamos imprimir as informações
-    // tmp_iterator = grafo->primeiro;
-    // while (tmp_iterator != NULL)
-    // {
-    //     printf("* No %u:\n", tmp_iterator->id);
-    //     printf("  - Graus de Entrada: %u\n", tmp_iterator->grau_entrada);
-    //     printf("  - Graus de Saida: %u\n", tmp_iterator->grau_saida);
-    //     tmp_iterator = tmp_iterator->proximo_no;
-    // }
+}
+
+
+/*====================================================== 
+*              COMPARAR ARESTAS
+---------------------------------------------------------
+* Função:  
+* Parametros: a e b - ponteiros para as arestas
+* Retorno: void
+======================================================*/
+int comparar(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
 }
 
 /*====================================================== 
@@ -477,25 +509,55 @@ void inicializa_graus(Grafo *grafo)
 ---------------------------------------------------------
 * Função: realiza a busca em profundidade 
 * Parametros: grafo - ponteiro para o grafo
-*             no - ponteiro para o nó
+*             u - nó de origem
+*             visitados - vetor de marcação, rastreia se um nó foi visitado durante a busca
+*             vertices_visitados - vetor que armazena os ids dos vértices visitados em ordem crescente durante a busca 
+*             contador_visitados - contador de vértices visitados
 * Retorno: void
 ======================================================*/
-void busca_prof_visit(Grafo *grafo, No *no) {
-    // Marca o vértice como visitado
-    no->visitado = 1;
-    printf("%u ", no->id); // Você pode modificar esta linha para fazer o que quiser com o vértice
+void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados) {
+    visitados[u] = 1;
+    vertices_visitados[(*contador_visitados)++] = u;
 
-    // Percorre todos os vértices adjacentes ao vértice atual
-    Aresta *aresta_atual = no->primeira_aresta;
+    No *no = encontrar_no_por_id(grafo, u);
+    if (no == NULL) {
+        return;  // Caso não encontre o nó, retorna
+    }
+
+    Aresta *aresta_atual = no->primeira_aresta; // Aresta atual é a primeira aresta do nó
+
+    // Enquanto houver arestas, chama a busca em profundidade para o nó de destino
     while (aresta_atual != NULL) {
-        // Se o vértice adjacente não foi visitado, faz uma chamada recursiva para visitá-lo
-        No *no_adj = encontrar_no_por_id(grafo, aresta_atual->id_alvo);
-        if (no_adj != NULL && no_adj->visitado == 0)
-            busca_prof_visit(grafo, no_adj);
+        unsigned int v = aresta_atual->id_alvo; 
+        if (!visitados[v]) {
+            busca_prof_visit(grafo, v, visitados, vertices_visitados, contador_visitados);
+        }
         aresta_atual = aresta_atual->prox_aresta;
     }
 }
 
+/*====================================================== 
+*      BUSCA EM PROFUNDIDADE INVERSA
+---------------------------------------------------------
+* Função: realiza a busca em profundidade inversa, ou seja, a partir do nó de destino
+* Parametros: grafo - ponteiro para o grafo
+*             u - nó de origem
+* Retorno: void
+======================================================*/
+void busca_prof_visit_inversa(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados) {
+    visitados[u] = 1;
+    vertices_visitados[(*contador_visitados)++] = u;
+
+    for (No *tmp = grafo->primeiro; tmp != NULL; tmp = tmp->proximo_no) {
+        Aresta *aresta_atual = tmp->primeira_aresta;
+        while (aresta_atual != NULL) {
+            if (aresta_atual->id_alvo == u && !visitados[tmp->id]) {
+                busca_prof_visit_inversa(grafo, tmp->id, visitados, vertices_visitados, contador_visitados);
+            }
+            aresta_atual = aresta_atual->prox_aresta;
+        }
+    }
+}
 
 /*====================================================== 
 *        BUSCA EM PROFUNDIDADE EM TODO O GRAFO
@@ -505,31 +567,144 @@ void busca_prof_visit(Grafo *grafo, No *no) {
 * Retorno: void
 ======================================================*/
 void busca_prof(Grafo *grafo) {
-    No *tmp_iterator = grafo->primeiro;
+    No *tmp_iterator = grafo->primeiro; // Iterador para percorrer os nós
     while (tmp_iterator != NULL) {
         tmp_iterator->visitado = 0; // Inicializa todos os vértices como não visitados
         tmp_iterator = tmp_iterator->proximo_no;
     }
 
     tmp_iterator = grafo->primeiro;
+    int *visitados = (int *)calloc(grafo->numero_de_nos, sizeof(int));  // Aloca vetor de visitados uma vez
+    if (visitados == NULL) {
+        printf("Erro ao alocar memoria\n");
+        return;
+    }
+
+    // Percorre todos os nos do grafo
     while (tmp_iterator != NULL) {
-        if (tmp_iterator->visitado == 0)
-            busca_prof_visit(grafo, tmp_iterator); // Inicia a busca em profundidade a partir de um vértice não visitado
+        if (visitados[tmp_iterator->id] == 0) {
+            int *vertices_visitados = (int *)malloc(grafo->numero_de_nos * sizeof(int)); 
+            int contador_visitados = 0; //
+            if (vertices_visitados == NULL) {
+                printf("Erro ao alocar memoria\n");
+                free(visitados);
+                return;
+            }
+
+            busca_prof_visit(grafo, tmp_iterator->id, visitados, vertices_visitados, &contador_visitados);
+
+            // Ordena os vertices visitados
+            qsort(vertices_visitados, contador_visitados, sizeof(int), comparar);
+
+            // Imprime os vertices em ordem crescente
+            for (int i = 0; i < contador_visitados; i++) {
+                printf("%d ", vertices_visitados[i]);
+            }
+            printf("\n");
+
+            free(vertices_visitados);
+        }
         tmp_iterator = tmp_iterator->proximo_no;
     }
+    free(visitados);  // Libera a memória do vetor de visitados após a busca
 }
 
-
+/*====================================================== 
+*        FECHO TRANSITIVO DIRETO
+---------------------------------------------------------
+* Função: realiza o fecho transitivo direto de um nó
+* Parametros: grafo - ponteiro para o grafo
+*             u - nó de origem
+* Retorno: void
+======================================================*/
 void fecho_transitivo_direto(Grafo *grafo, unsigned int u) {
-    // Verifica se o vértice u existe no grafo
     No *no = encontrar_no_por_id(grafo, u);
     if (no == NULL) {
         printf("O vertice %u nao existe no grafo\n", u);
         return;
     }
 
-    // Marca todos os vértices alcançáveis a partir de u
+    int *visitados = (int *)calloc(grafo->numero_de_nos, sizeof(int));
+    int *vertices_visitados = (int *)malloc(grafo->numero_de_nos * sizeof(int));
+    int contador_visitados = 0;
+
+    if (visitados == NULL || vertices_visitados == NULL) {
+        printf("Erro ao alocar memoria\n");
+        free(visitados);
+        free(vertices_visitados);
+        return;
+    }
+
+    busca_prof_visit(grafo, u, visitados, vertices_visitados, &contador_visitados);
+
+    if (!grafo->direcionado) {
+        for (unsigned int i = 1; i <= grafo->numero_de_nos; i++) { 
+            if (i != u && encontrar_no_por_id(grafo, i) != NULL && !visitados[i]) {
+                busca_prof_visit(grafo, i, visitados, vertices_visitados, &contador_visitados);
+            }
+        }
+    }
+
+    // Ordenar os vértices visitados
+    qsort(vertices_visitados, contador_visitados, sizeof(int), comparar);
+
+    // Imprimir os vértices em ordem crescente
     printf("Fecho Transitivo Direto a partir do V%u: ", u);
-    busca_prof_visit(grafo, no);
+    for (int i = 0; i < contador_visitados; i++) {
+        printf("%d ", vertices_visitados[i]);
+    }
     printf("\n");
+
+    free(visitados);
+    free(vertices_visitados);
+}
+
+/*====================================================== 
+*        FECHO TRANSITIVO INDIRETO
+---------------------------------------------------------
+* Função: realiza o fecho transitivo indireto de um nó
+* Parametros: grafo - ponteiro para o grafo
+*             u - nó de origem
+* Retorno: void
+======================================================*/
+void fecho_transitivo_indireto(Grafo *grafo, unsigned int u) {
+    No *no = encontrar_no_por_id(grafo, u);
+    if (no == NULL) {
+        printf("O vertice %u nao existe no grafo\n", u);
+        return;
+    }
+
+    int *visitados = (int *)calloc(grafo->numero_de_nos, sizeof(int));
+    int *vertices_visitados = (int *)malloc(grafo->numero_de_nos * sizeof(int));
+    int contador_visitados = 0;
+
+    if (visitados == NULL || vertices_visitados == NULL) {
+        printf("Erro ao alocar memoria\n");
+        free(visitados);
+        free(vertices_visitados);
+        return;
+    }
+
+    busca_prof_visit_inversa(grafo, u, visitados, vertices_visitados, &contador_visitados);
+
+    if (!grafo->direcionado) {
+        for (unsigned int i = 1; i <= grafo->numero_de_nos; i++) {
+            if (i != u && encontrar_no_por_id(grafo, i) != NULL && !visitados[i]) {
+                busca_prof_visit_inversa(grafo, i, visitados, vertices_visitados, &contador_visitados);
+            }
+        }
+    }
+
+    // Ordenar os vértices visitados
+    qsort(vertices_visitados, contador_visitados, sizeof(int), comparar);
+
+    // Imprimir os vértices em ordem crescente
+    printf("Fecho Transitivo Indireto a partir do V%u: ", u);
+    for (int i = 0; i < contador_visitados; i++) {
+        printf("%d ", vertices_visitados[i]);
+    }
+    printf("\n");
+
+    free(visitados);
+    free(vertices_visitados);
 }
