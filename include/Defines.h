@@ -8,5 +8,7 @@
 #include <unistd.h> /* para algumas funções de sistema */
 #include <libgen.h> /* manipulação de strings */
 #include <unistd.h> /* manipulação de diretórios */
+#include <limits.h> /* constantes de limites de tipos inteiros */
+#include <float.h> /* constantes de limites de tipos de ponto flutuante */
 
 #endif  // DEFINES_H

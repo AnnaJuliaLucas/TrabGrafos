@@ -5,14 +5,14 @@
 #include "No.h"
 
 typedef struct Grafo {
-    size_t numero_de_nos;
-    size_t numero_de_arestas;
-    int direcionado;
-    int arestas_ponderadas;
-    int nos_ponderados;
-    No *primeiro;
-    No *ultimo;
-    No **adj;
+  size_t numero_de_nos;
+  size_t numero_de_arestas;
+  int direcionado;
+  int arestas_ponderadas;
+  int nos_ponderados;
+  No *primeiro;
+  No *ultimo;
+  No **adj;
 
 } Grafo;
 
@@ -31,11 +31,15 @@ int conectado(Grafo *grafo, size_t id_no_1, size_t id_no_2);
 // Funções adicionadas
 void inicializa_graus(Grafo *grafo);
 No *encontrar_no_por_id(Grafo *grafo, unsigned int id);
+Aresta *encontrar_antecessor_aresta(Grafo *grafo, unsigned int id_origem,
+                                    unsigned int id_destino);
 void busca_prof(Grafo *grafo);
-void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados);
-void busca_prof_visit_inversa(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados);
+void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados,
+int *vertices_visitados, int *contador_visitados);
+void busca_prof_visit_inversa(Grafo *grafo, unsigned int u, int *visitados,
+int *vertices_visitados, int *contador_visitados);
 void fecho_transitivo_direto(Grafo *grafo, unsigned int u);
 void fecho_transitivo_indireto(Grafo *grafo, unsigned int u);
 int comparar(const void *a, const void *b);
 
-#endif  // GRAFO_H
+#endif // GRAFO_H

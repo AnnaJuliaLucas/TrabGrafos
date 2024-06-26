@@ -128,9 +128,75 @@ void destruir_grafo(Grafo *grafo) {
 * Recebe: id_no - id do nó a ser removido
 * Retorno: void
 * ======================================================*/
-// void remover_no(Grafo *grafo, size_t id_no)
-// {
-// }
+void remover_no(Grafo *grafo, size_t id_no){
+    // Verifica se o grafo e a lista de nós existem
+    if (grafo == NULL || grafo->primeiro == NULL) {
+        return;
+    }
+
+
+    No *no_atual = grafo->primeiro;
+    No *no_remover = NULL;
+
+    // Encontrar o nó a ser removido
+    while (no_atual) {
+        if (no_atual->id == id_no) {
+            no_remover = no_atual;
+            break;
+        }
+        no_atual = no_atual->proximo_no;
+    }
+
+    if (!no_remover) return; // Nó não encontrado
+
+    // Remover todas as arestas que apontam para o nó a ser removido
+    No *no_iter = grafo->primeiro;
+    while (no_iter) {
+        Aresta *aresta_atual = no_iter->primeira_aresta;
+        Aresta *aresta_anterior = NULL;
+        while (aresta_atual) {
+            if (aresta_atual->id_alvo == id_no) {
+                if (aresta_anterior) {
+                    aresta_anterior->prox_aresta = aresta_atual->prox_aresta;
+                } else {
+                    no_iter->primeira_aresta = aresta_atual->prox_aresta;
+                }
+                free(aresta_atual);
+                no_iter->numero_de_arestas--;
+                break;
+            }
+            aresta_anterior = aresta_atual;
+            aresta_atual = aresta_atual->prox_aresta;
+        }
+        no_iter = no_iter->proximo_no;
+    }
+
+    // Remover todas as arestas do nó a ser removido
+    Aresta *aresta_atual = no_remover->primeira_aresta;
+    while (aresta_atual) {
+        Aresta *prox_aresta = aresta_atual->prox_aresta;
+        free(aresta_atual);
+        aresta_atual = prox_aresta;
+    }
+
+    // Ajustar os ponteiros do grafo
+    if (no_remover->no_anterior) {
+        no_remover->no_anterior->proximo_no = no_remover->proximo_no;
+    } else {
+        grafo->primeiro = no_remover->proximo_no;
+    }
+    if (no_remover->proximo_no) {
+        no_remover->proximo_no->no_anterior = no_remover->no_anterior;
+    } else {
+        grafo->ultimo = no_remover->no_anterior;
+    }
+
+    // Liberar a memória do nó
+    free(no_remover);
+
+    // Atualizar os contadores do grafo
+    grafo->numero_de_nos--;
+}
 
 /*====================================================== 
 *                    REMOVER ARESTA
@@ -139,9 +205,71 @@ void destruir_grafo(Grafo *grafo) {
 *         id_no_2 - id do nó 2
 * Retorno: void
 * ======================================================*/
-// void remover_aresta(Grafo *grafo, size_t id_no_1, size_t id_no_2)
-// {
-// }
+void remover_aresta(Grafo *grafo, size_t id_no_1, size_t id_no_2) {
+
+    // 1. Encontra o nó de origem
+    No *no_origem = encontrar_no_por_id(grafo, id_no_1); 
+    if (no_origem == NULL) {
+        printf("Erro: Nó de origem %zu não encontrado.\n", id_no_1);
+        return;
+    }
+
+    Aresta *aresta_atual = no_origem->primeira_aresta;
+    Aresta *aresta_anterior = NULL;
+
+    //2. Percorre a lista de arestas do nó de origem até encontrar a aresta que leva ao nó de destino
+    while (aresta_atual != NULL && aresta_atual->id_alvo != id_no_2) {
+        aresta_anterior = aresta_atual;
+        aresta_atual = aresta_atual->prox_aresta;
+    }
+
+    if (aresta_atual == NULL) {
+        printf("Erro: Aresta de %zu para %zu não encontrada.\n", id_no_1, id_no_2);
+        return;
+    }
+
+    // 3. Remove a aresta ajustando os ponteiros da lista encadeada
+    if (aresta_anterior == NULL) {
+        no_origem->primeira_aresta = aresta_atual->prox_aresta;
+    } else {
+        aresta_anterior->prox_aresta = aresta_atual->prox_aresta;
+    }
+
+    free(aresta_atual);
+    grafo->numero_de_arestas--;
+
+    // 4. Se o grafo não for direcionado, repete o processo para a aresta no nó destino
+    if (!grafo->direcionado) {
+        // Remover a aresta correspondente no nó de destino
+        no_origem = encontrar_no_por_id(grafo, id_no_2);
+        if (no_origem == NULL) {
+            printf("Erro: Nó de destino %zu não encontrado.\n", id_no_2);
+            return;
+        }
+
+        aresta_atual = no_origem->primeira_aresta;
+        aresta_anterior = NULL;
+
+        while (aresta_atual != NULL && aresta_atual->id_alvo != id_no_1) {
+            aresta_anterior = aresta_atual;
+            aresta_atual = aresta_atual->prox_aresta;
+        }
+
+        if (aresta_atual == NULL) {
+            printf("Erro: Aresta de %zu para %zu não encontrada.\n", id_no_2, id_no_1);
+            return;
+        }
+
+        if (aresta_anterior == NULL) {
+            no_origem->primeira_aresta = aresta_atual->prox_aresta;
+        } else {
+            aresta_anterior->prox_aresta = aresta_atual->prox_aresta;
+        }
+
+        free(aresta_atual);
+    }
+}
+
 
 
 /*======================================================= 
@@ -421,13 +549,51 @@ void imprimir_grafo_em_arquivo(Grafo *grafo, FILE *output_file)
 *             id_no_2 - id do nó 2
 * Retorno: 1 se os nós estão conectados, 0 caso contrário
 ======================================================*/
-// int conectado(Grafo *grafo, size_t id_no_1, size_t id_no_2)
-// {
-// }
+int conectado(Grafo *grafo, size_t id_no_1, size_t id_no_2)
+{
+    if (grafo == NULL) {
+        return 0;
+    }
+
+    No *no_1 = encontrar_no_por_id(grafo, id_no_1);
+    No *no_2 = encontrar_no_por_id(grafo, id_no_2);
+
+    if (no_1 == NULL || no_2 == NULL) {
+        return 0;
+    }
+
+    // Inicializa vetor de visitados
+    int *visitados = (int *)malloc(grafo->numero_de_nos * sizeof(int));
+    for (size_t i = 0; i < grafo->numero_de_nos; i++) {
+        visitados[i] = 0;
+    }
+
+    // Vetor para armazenar vértices visitados em ordem crescente durante a busca
+    int *vertices_visitados = (int *)malloc(grafo->numero_de_nos * sizeof(int));
+    int contador_visitados = 0;
+
+    // Realiza busca em profundidade a partir de id_no_1
+    busca_prof_visit(grafo, id_no_1, visitados, vertices_visitados, &contador_visitados);
+
+    // Verifica se id_no_2 foi marcado como visitado durante a busca
+    int conectado = 0;
+    for (int i = 0; i < contador_visitados; i++) {
+        // Convertendo id_no_2 para int para evitar comparação entre signed e unsigned
+        if (vertices_visitados[i] == (int)id_no_2) {
+            conectado = 1;
+            break;
+        }
+    }
+
+    free(visitados);
+    free(vertices_visitados);
+
+    return conectado;
+}
 
 
 // =============================================================================================================================================================================
-//                                       ESTRUTURA COMPLEMENTAR DE UM GRAFO
+//                                                                        ESTRUTURA COMPLEMENTAR DE UM GRAFO
 // =============================================================================================================================================================================
 
 /*====================================================== 
@@ -496,7 +662,7 @@ void inicializa_graus(Grafo *grafo)
 /*====================================================== 
 *              COMPARAR ARESTAS
 ---------------------------------------------------------
-* Função:  
+* Função: Compara duas arestas 
 * Parametros: a e b - ponteiros para as arestas
 * Retorno: void
 ======================================================*/
@@ -529,7 +695,7 @@ void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados, int *vertice
     // Enquanto houver arestas, chama a busca em profundidade para o nó de destino
     while (aresta_atual != NULL) {
         unsigned int v = aresta_atual->id_alvo; 
-        if (!visitados[v]) {
+        if (!visitados[v])  {
             busca_prof_visit(grafo, v, visitados, vertices_visitados, contador_visitados);
         }
         aresta_atual = aresta_atual->prox_aresta;

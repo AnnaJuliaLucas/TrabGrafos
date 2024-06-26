@@ -1,9 +1,86 @@
 #include "../include/Grafo.h"
 #include "Defines.h" // Include the missing header file
 
-// void menu(Grafo *grafo){
+/*====================================================== 
+*                    ESCOLHA
+* Função: escolher a opção do menu
+* Recebe: Grafo *grafo
+          char opcao
+* Retorno: void
+* ======================================================*/
+void escolha(Grafo *grafo, char opcao)
+{
+    switch (opcao) {
+        case 'a' : {
+            printf("      Opcao escolhida: FECHO TRANSITIVO DIRETO \n");
+            printf("\nEscolha um vertice: ");
+            int vertice;
+            scanf("%d", &vertice);
+            fecho_transitivo_direto(grafo, vertice);
+            break;
+        }
+        case 'b' : {
+            printf("      Opcao escolhida: FECHO TRANSITIVO INDIRETO \n");
+            printf("\nEscolha um vertice: ");
+            int vertice;
+            scanf("%d", &vertice);
+            fecho_transitivo_indireto(grafo, vertice);
+            break;
+        }
+        case 'j' :{
+            printf("      Opcao escolhida: REMOVER ARESTA \n");
+            printf("\nEscolha um vertice de origem: ");
+            int origem;
+            scanf("%d", &origem);
+            printf("\nEscolha um vertice de destino: ");
+            int destino;
+            scanf("%d", &destino);
+            remover_aresta(grafo, origem, destino);
+            break;
+        }
+        case 'k' :{
+            printf("      Opcao escolhida: REMOVER NO \n");
+            printf("\nEscolha um vertice: ");
+            int vertice;
+            scanf("%d", &vertice);
+            remover_no(grafo, vertice);
+            break;
+        }
+        case 'l':{
+            printf("      Opcao escolhida: VERIFICAR CONECTIVIDADE ENTRE DOIS NOS \n");
+            printf("\nEscolha um vertice de origem: ");
+            int origem;
+            scanf("%d", &origem);
+            printf("\nEscolha um vertice de destino: ");
+            int destino;
+            scanf("%d", &destino);
+
+            if(conectado(grafo, origem, destino))
+                printf("\nOs vertices %d e %d sao conectados.\n", origem, destino);
+            else
+                printf("\nOs vertices %d e %d nao sao conectados.\n", origem, destino);
+            
+            break;
+        }
+        case 'z': {
+            printf("      Opcao escolhida: IMPRIMIR GRAFO \n\n");
+            imprimir_grafo(grafo); 
+            break;
+        }
+        case 'x':{
+            printf("      OPERACAO CANCELADA \n");
+            break;
+        }
+        default:
+            printf("Opcao invalida.\n");
+        
+    }
+}
+
+// void menu(Grafo *grafo)
 void menu(Grafo *grafo){
     char opcao;	
+    
     printf("\n======================= MENU  ======================= \n");
     printf("a) Fecho Transitivo Direto\n");
     printf("b) Fecho Transitivo Indireto\n");
@@ -14,32 +91,23 @@ void menu(Grafo *grafo){
     printf("g) Caminhamento em Profundidade a partir de um vertice\n");
     printf("h) Propriedades do grafo (raio, diametro, centro, periferia)\n");
     printf("i) Conjunto de Vertices de Articulacao\n");
-    printf("Escolha uma opcao (a-i): ");
+    printf("j) Remover aresta\n");
+    printf("k) Remover no\n");
+    printf("l) Verificar conectividade entre dois nos\n");
+    printf("z) Imprimir grafo\n");
+    printf("X) SAIR\n");
+    printf("\n Escolha uma opcao (a-i): ");
     scanf(" %c", &opcao);
     printf("===================================================== \n");
+    escolha(grafo,opcao);
 
-    
-    switch (opcao)
-    {
-        case 'a': {
-            printf("      Opcao escolhida: FECHO TRANSITIVO DIRETO \n");
-            printf("\nEscolha um vertice: ");
-            int vertice;
-            scanf("%d", &vertice);
-            fecho_transitivo_direto(grafo, vertice);
-            break;
-        }
-        case 'b': {
-            printf("      Opcao escolhida: FECHO TRANSITIVO INDIRETO \n");
-            printf("\nEscolha um vertice: ");
-            int vertice;
-            scanf("%d", &vertice);
-            fecho_transitivo_indireto(grafo, vertice);
-            break;
-        }
-        default:
-            printf("Opcao invalida.\n");
-    }
+    do{
+        printf("===================================================== \n");
+        printf("Faca uma nova escolha: ");
+        scanf(" %c", &opcao); 
+        printf("\n");
+        escolha(grafo,opcao);
+    } while(opcao != 'x' && opcao != 'X');
 }
 
 
@@ -113,7 +181,6 @@ void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *dir
     inicializar_grafo_com_arquivo(grafo, input_file); 
 
     // Ler e processar o arquivo de instância
-    imprimir_grafo(grafo);
 
     // Abertura do arquivo de saída
     FILE *output_file = fopen(nome_arquivo_saida, "w");
@@ -123,8 +190,8 @@ void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *dir
         return;
     }
 
-    printf("ARQUIVO DE SAIDA CRIADO COM SUCESSO!\n");
-inicializa_graus(grafo);
+    printf("\n ARQUIVO DE SAIDA CRIADO COM SUCESSO!\n");
+    inicializa_graus(grafo);
     // Escrever o resultado no arquivo de saída
     imprimir_grafo_em_arquivo(grafo, output_file);
 
@@ -157,7 +224,6 @@ int main(int argc,char **argv)
    
     // Processa a instância
     processar_instancia(&grafo, arquivo_entrada, output_file, op_direc, op_peso_aresta, op_peso_nos);
-    
 
     return 0;
 
