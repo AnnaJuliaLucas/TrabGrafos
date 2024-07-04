@@ -55,5 +55,14 @@ j) Parâmetro: o grafo não direcionado
 Saída: O conjunto de vértices de articulação
 ```
 
+## EXECUÇÃO 
+Para executar o programa:
+```
+grafo <arquivo_entrada> <arquivo_saida> <Opc_Direc> <Opc_Peso_Aresta> <Opc_Peso_Nos>->
+```
+
+Exemplo de uso:
+```
+grafo 5nD_2.dat source/output/  0 1 0
 ```
 
