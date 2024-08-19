@@ -16,7 +16,7 @@ void escolha(Grafo *grafo, char opcao)
             printf("\nEscolha um vertice: ");
             int vertice;
             scanf("%d", &vertice);
-            fecho_transitivo_direto(grafo, vertice);
+            imprimir_fecho(grafo, vertice, "Direto");
             break;
         }
         case 'b' : {
@@ -24,9 +24,72 @@ void escolha(Grafo *grafo, char opcao)
             printf("\nEscolha um vertice: ");
             int vertice;
             scanf("%d", &vertice);
-            fecho_transitivo_indireto(grafo, vertice);
+            imprimir_fecho(grafo, vertice, "Indireto");
             break;
         }
+        case 'c':{
+            printf("      Opcao escolhida: CAMINHO MINIMO ENTRE DOIS VERTICES USANDO DIJKSTRA \n");
+            int origem, destino;
+            printf("\nEscolha um vertice de origem: ");
+            scanf("%d", &origem);
+            printf("Escolha um vertice de destino: ");
+            scanf("%d", &destino);
+
+            Grafo g_dijkstra = caminho_Dijkstra(grafo, origem, destino);
+            if(grafo_vazio(g_dijkstra))
+            {
+                printf("Nao existe caminho entre os vertices %d e %d\n", origem, destino);
+            }
+            else
+            {
+                printf("Caminho minimo entre %d e %d usando Dijkstra: \n", origem, destino);
+                imprimir_grafo(&g_dijkstra);
+            }
+            break;
+        }
+        case 'd' :{
+            printf("      Opcao escolhida: CAMINHO MINIMO ENTRE DOIS VERTICES USANDO FLOYD \n");
+            int origem, destino;
+            printf("\nEscolha um vertice de origem: ");
+            scanf("%d", &origem);
+            printf("Escolha um vertice de destino: ");
+            scanf("%d", &destino);
+
+            Grafo g_floyd = caminho_Floyd_Warshall(grafo, origem, destino);
+            if(grafo_vazio(g_floyd))
+            {
+                printf("Nao existe caminho entre os vertices %d e %d\n", origem, destino);
+            }
+            else
+            {
+                printf("Caminho minimo entre %d e %d usando Floyd: \n", origem, destino);
+                imprimir_grafo(&g_floyd);
+            }
+            break;
+        }
+        case 'e' :{
+            printf("      Opcao escolhida: ARVORE GERADORA MINIMA USANDO PRIM \n");
+            Grafo g_prim = AGM_Prim(*grafo);
+            printf("Arvore geradora minima usando Prim: \n");
+            imprimir_grafo(&g_prim);
+            break;
+        }
+        case 'f' :{
+            printf("      Opcao escolhida: ARVORE GERADORA MINIMA USANDO KRUSKAL \n");
+            Grafo g_kruskal = AGM_Kruskal(*grafo);
+            printf("Arvore geradora minima usando Kruskal: \n");
+            imprimir_grafo(&g_kruskal);
+            break;
+        }
+        case 'g' :{
+            printf("      Opcao escolhida: CAMINHAMENTO EM PROFUNDIDADE A PARTIR DE UM VERTICE \n");
+            printf("\nEscolha um vertice: ");
+            int vertice;
+            scanf("%d", &vertice);
+            busca_prof(grafo);
+            break;
+        }
+        //------ continuar daqui -----
         case 'j' :{
             printf("      Opcao escolhida: REMOVER ARESTA \n");
             printf("\nEscolha um vertice de origem: ");
@@ -62,7 +125,7 @@ void escolha(Grafo *grafo, char opcao)
             
             break;
         }
-        case 'z': {
+        case 'm': {
             printf("      Opcao escolhida: IMPRIMIR GRAFO \n\n");
             imprimir_grafo(grafo); 
             break;
@@ -94,7 +157,7 @@ void menu(Grafo *grafo){
     printf("j) Remover aresta\n");
     printf("k) Remover no\n");
     printf("l) Verificar conectividade entre dois nos\n");
-    printf("z) Imprimir grafo\n");
+    printf("m) Imprimir grafo\n");
     printf("X) SAIR\n");
     printf("\n Escolha uma opcao (a-i): ");
     scanf(" %c", &opcao);

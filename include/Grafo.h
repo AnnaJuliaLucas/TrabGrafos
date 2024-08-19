@@ -4,6 +4,7 @@
 #include "Defines.h"
 #include "No.h"
 
+typedef struct No No;
 typedef struct Grafo {
   size_t numero_de_nos;
   size_t numero_de_arestas;
@@ -15,31 +16,43 @@ typedef struct Grafo {
   No **adj;
 
 } Grafo;
+typedef struct {
+    int *vertices;
+    int tamanho;
+} Fecho;
 
 void inicializar_grafo(Grafo *grafo);
 void inicializar_grafo_com_arquivo(Grafo *grafo, FILE *instance);
 void destruir_grafo(Grafo *grafo);
-void remover_no(Grafo *grafo, size_t id_no);
-void remover_aresta(Grafo *grafo, size_t id_no_1, size_t id_no_2);
-void adicionar_no(Grafo *grafo, size_t id_no, float peso);
-void adicionar_aresta(Grafo *grafo, size_t id_no_1, size_t id_no_2, float peso);
+void remover_no(Grafo *grafo, unsigned int  id_no);
+void remover_aresta(Grafo *grafo, unsigned int  id_no_1, unsigned int  id_no_2);
+void adicionar_no(Grafo *grafo, unsigned int  id_no, float peso);
+void adicionar_aresta(Grafo *grafo, unsigned int  id_no_1, unsigned int  id_no_2, float peso);
 void imprimir_grafo_em_arquivo(Grafo *grafo, FILE *output_file);
 void imprimir_grafo_console(Grafo *grafo);
 void imprimir_grafo(Grafo *grafo);
-int conectado(Grafo *grafo, size_t id_no_1, size_t id_no_2);
+int conectado(Grafo *grafo, unsigned int  id_no_1, unsigned int  id_no_2);
 
 // Funções adicionadas
 void inicializa_graus(Grafo *grafo);
-No *encontrar_no_por_id(Grafo *grafo, unsigned int id);
-Aresta *encontrar_antecessor_aresta(Grafo *grafo, unsigned int id_origem,
-                                    unsigned int id_destino);
+No *encontrar_no_por_id(Grafo *grafo, unsigned int u);
+Aresta *encontrar_antecessor_aresta(Grafo *grafo, unsigned int id_origem, unsigned int id_destino);
 void busca_prof(Grafo *grafo);
-void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados,
-int *vertices_visitados, int *contador_visitados);
-void busca_prof_visit_inversa(Grafo *grafo, unsigned int u, int *visitados,
-int *vertices_visitados, int *contador_visitados);
-void fecho_transitivo_direto(Grafo *grafo, unsigned int u);
-void fecho_transitivo_indireto(Grafo *grafo, unsigned int u);
+void busca_prof_visit(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados);
+void busca_prof_visit_inversa(Grafo *grafo, unsigned int u, int *visitados, int *vertices_visitados, int *contador_visitados);
 int comparar(const void *a, const void *b);
+
+// Funções relacionadas ao fecho transitivo
+Fecho fecho_transitivo_direto(Grafo *grafo, unsigned int u);
+Fecho fecho_transitivo_indireto(Grafo *grafo, unsigned int u);
+void imprimir_fecho(Grafo *grafo, unsigned int u, const char *tipo_str);
+
+// Funções do caminho mínimo
+Grafo caminho_Dijkstra(Grafo *grafo, unsigned int o, unsigned int d );
+Grafo caminho_Floyd_Warshall(Grafo *grafo, unsigned int o, unsigned int d );
+Grafo AGM_Kruskal(Grafo grafo);
+Grafo AGM_Prim(Grafo grafo);
+int grafo_vazio(Grafo grafo);
+
 
 #endif // GRAFO_H

@@ -7,6 +7,9 @@
         "grafo.h": "c",
         "defines.h": "c",
         "string.h": "c",
-        "no.h": "c"
+        "no.h": "c",
+        "fila.h": "c",
+        "limits.h": "c",
+        "lista.h": "c"
     }
 }
