@@ -62,11 +62,27 @@ Lista* cria_l(Grafo grafo){
 
 
 /*======================================================
-*                     REMOVE LISTA
+*                     CRIA LISTA VAZIA
 --------------------------------------------------------
-* Função: Remove um elemento da lista
-* Parametros: Lista *l
-* Retorno: No lista*
+* Função: Cria uma lista vazia
+* Parametros: void
+* Retorno: Lista*
+======================================================*/
+Lista* cria_vazia_l(){
+    Lista *nova = (Lista *)malloc(sizeof(Lista));
+    nova->head = NULL;
+    nova->tam = 0;
+    
+    return nova;
+}
+
+
+/*======================================================
+*                    REMOVE LISTA
+--------------------------------------------------------
+* Função: Remove uma lista
+* Parametros: Lista *l - lista
+* Retorno: No_l*
 ======================================================*/
 No_l* remove_l(Lista *l){
     if (l->tam==0){
@@ -74,16 +90,16 @@ No_l* remove_l(Lista *l){
     }
     No_l *removido = l->head;
     l->head = l->head->proximo;
+    l->tam--;
     return removido;
 }
 
-
 /*======================================================
-*                     VAZIA LISTA
+*                    MOSTRA LISTA
 --------------------------------------------------------
-* Função: Verifica se a lista está vazia
-* Parametros: Lista l
-* Retorno: int
+* Função: Mostra uma lista
+* Parametros: Lista l - lista
+* Retorno: void
 ======================================================*/
 void mostra_l(Lista l){
     No_l *no = l.head;
@@ -91,4 +107,21 @@ void mostra_l(Lista l){
         printf("%d - %d - %f \n",no->origem, no->destino, no->peso);
         no = no->proximo;
     }
+}
+
+/*======================================================
+*                    DESTROI LISTA
+--------------------------------------------------------
+* Função: Destroi uma lista
+* Parametros: Lista *l - lista
+* Retorno: void
+======================================================*/
+void destroi_l(Lista *lista) {
+    No_l *atual = lista->head;
+    while (atual != NULL) {
+        No_l *proximo = atual->proximo; // Salva o próximo nó
+        free(atual); // Libera o nó atual
+        atual = proximo; // Move para o próximo nó
+    }
+    free(lista); // Libera a lista em si
 }

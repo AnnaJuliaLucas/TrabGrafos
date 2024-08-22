@@ -15,8 +15,11 @@ typedef struct Lista{
 } Lista;
 
 Lista* cria_l(Grafo grafo);
+Lista* cria_vazia_l();
 No_l* remove_l(Lista *l);
+void insere_l(Lista *l,No no, Aresta aresta);
 int vazia_l(Lista l);
-int destroi_l(Lista *l);
+void destroi_l(Lista *l);
 void mostra_l(Lista l);
+
 #endif /* LISTA_h */

@@ -8,89 +8,104 @@
           char opcao
 * Retorno: void
 * ======================================================*/
+// Atualize a função escolha
 void escolha(Grafo *grafo, char opcao)
 {
     switch (opcao) {
-        case 'a' : {
+        case 'a': {
             printf("      Opcao escolhida: FECHO TRANSITIVO DIRETO \n");
             printf("\nEscolha um vertice: ");
             int vertice;
             scanf("%d", &vertice);
             imprimir_fecho(grafo, vertice, "Direto");
+
+            // Gerar arquivo DOT
+            char arquivo_dot[50];
+            snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/fecho_direto_%d.dot", vertice);
             break;
         }
-        case 'b' : {
+        case 'b': {
             printf("      Opcao escolhida: FECHO TRANSITIVO INDIRETO \n");
             printf("\nEscolha um vertice: ");
             int vertice;
             scanf("%d", &vertice);
             imprimir_fecho(grafo, vertice, "Indireto");
+
+            // Gerar arquivo DOT
+            char arquivo_dot[50];
+            snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/fecho_indireto_%d.dot", vertice);
             break;
         }
-        case 'c':{
-            printf("      Opcao escolhida: CAMINHO MINIMO ENTRE DOIS VERTICES USANDO DIJKSTRA \n");
-            int origem, destino;
+        case 'c': {
+            printf("      Opcao escolhida: CAMINHO MINIMO DE DIJKSTRA \n");
+            int o, d;
             printf("\nEscolha um vertice de origem: ");
-            scanf("%d", &origem);
-            printf("Escolha um vertice de destino: ");
-            scanf("%d", &destino);
+            scanf("%d", &o);
+            printf("\nEscolha um vertice de destino: ");
+            scanf("%d", &d);
 
-            Grafo g_dijkstra = caminho_Dijkstra(grafo, origem, destino);
-            if(grafo_vazio(g_dijkstra))
-            {
-                printf("Nao existe caminho entre os vertices %d e %d\n", origem, destino);
-            }
-            else
-            {
-                printf("Caminho minimo entre %d e %d usando Dijkstra: \n", origem, destino);
+            Grafo g_dijkstra;
+            g_dijkstra = caminho_Dijkstra(grafo, o, d);
+
+            if (grafo_vazio(g_dijkstra)) {
+                exit(2);
+                printf("Nao ha caminho entre os nos pedidos\n");
+            } else {
+                exit(3);
+                printf("Menor Caminho -> \n");
                 imprimir_grafo(&g_dijkstra);
-            }
-            break;
-        }
-        case 'd' :{
-            printf("      Opcao escolhida: CAMINHO MINIMO ENTRE DOIS VERTICES USANDO FLOYD \n");
-            int origem, destino;
-            printf("\nEscolha um vertice de origem: ");
-            scanf("%d", &origem);
-            printf("Escolha um vertice de destino: ");
-            scanf("%d", &destino);
 
-            Grafo g_floyd = caminho_Floyd_Warshall(grafo, origem, destino);
-            if(grafo_vazio(g_floyd))
-            {
-                printf("Nao existe caminho entre os vertices %d e %d\n", origem, destino);
-            }
-            else
-            {
-                printf("Caminho minimo entre %d e %d usando Floyd: \n", origem, destino);
-                imprimir_grafo(&g_floyd);
+                // Gerar arquivo DOT
+                char arquivo_dot[50];
+                snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/dijkstra_%d_%d.dot", o, d);
             }
             break;
         }
-        case 'e' :{
-            printf("      Opcao escolhida: ARVORE GERADORA MINIMA USANDO PRIM \n");
-            Grafo g_prim = AGM_Prim(*grafo);
-            printf("Arvore geradora minima usando Prim: \n");
-            imprimir_grafo(&g_prim);
+        case 'd': {
+            printf("      Opcao escolhida: CAMINHO MINIMO DE FLOYD-WARSHALL \n");
+            int o, d;
+            printf("\nEscolha um vertice de origem: ");
+            scanf("%d", &o);
+            printf("\nEscolha um vertice de destino: ");
+            scanf("%d", &d);
+
+            Grafo g_floyd_warshall;
+            g_floyd_warshall = caminho_Floyd_Warshall(grafo, o, d);
+
+            if (grafo_vazio(g_floyd_warshall)) {
+                printf("Nao ha caminho entre os nos pedidos\n");
+            } else {
+                printf("Menor Caminho: \n");
+                imprimir_grafo(&g_floyd_warshall);
+
+                // Gerar arquivo DOT
+                char arquivo_dot[50];
+                snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/floyd_%d_%d.dot", o, d);
+                gerar_arquivo_dot(&g_floyd_warshall, arquivo_dot);
+            }
             break;
         }
-        case 'f' :{
-            printf("      Opcao escolhida: ARVORE GERADORA MINIMA USANDO KRUSKAL \n");
-            Grafo g_kruskal = AGM_Kruskal(*grafo);
-            printf("Arvore geradora minima usando Kruskal: \n");
-            imprimir_grafo(&g_kruskal);
+        case 'f': {
+            printf("      Opcao escolhida: ARVORE GERADORA DE KRUSKAL \n");
+            Grafo g_Kruskal;
+            g_Kruskal = AGM_Kruskal(*grafo);
+            if (g_Kruskal.numero_de_nos > 0) {
+                imprimir_grafo(&g_Kruskal);
+
+                // Gerar arquivo DOT
+                char arquivo_dot[50];
+                snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/kruskal.dot");
+                gerar_arquivo_dot(grafo, arquivo_dot);
+            }
             break;
         }
-        case 'g' :{
+        case 'g': {
             printf("      Opcao escolhida: CAMINHAMENTO EM PROFUNDIDADE A PARTIR DE UM VERTICE \n");
-            printf("\nEscolha um vertice: ");
-            int vertice;
-            scanf("%d", &vertice);
-            busca_prof(grafo);
+            // Implementar o código para caminhar em profundidade e gerar DOT
             break;
         }
         //------ continuar daqui -----
-        case 'j' :{
+        case 'j': {
             printf("      Opcao escolhida: REMOVER ARESTA \n");
             printf("\nEscolha um vertice de origem: ");
             int origem;
@@ -101,7 +116,7 @@ void escolha(Grafo *grafo, char opcao)
             remover_aresta(grafo, origem, destino);
             break;
         }
-        case 'k' :{
+        case 'k': {
             printf("      Opcao escolhida: REMOVER NO \n");
             printf("\nEscolha um vertice: ");
             int vertice;
@@ -109,7 +124,7 @@ void escolha(Grafo *grafo, char opcao)
             remover_no(grafo, vertice);
             break;
         }
-        case 'l':{
+        case 'l': {
             printf("      Opcao escolhida: VERIFICAR CONECTIVIDADE ENTRE DOIS NOS \n");
             printf("\nEscolha um vertice de origem: ");
             int origem;
@@ -118,27 +133,33 @@ void escolha(Grafo *grafo, char opcao)
             int destino;
             scanf("%d", &destino);
 
-            if(conectado(grafo, origem, destino))
+            if (conectado(grafo, origem, destino))
                 printf("\nOs vertices %d e %d sao conectados.\n", origem, destino);
             else
                 printf("\nOs vertices %d e %d nao sao conectados.\n", origem, destino);
-            
+
+            // Gerar arquivo DOT (se aplicável)
             break;
         }
         case 'm': {
             printf("      Opcao escolhida: IMPRIMIR GRAFO \n\n");
-            imprimir_grafo(grafo); 
+            imprimir_grafo(grafo);
+
+            // Gerar arquivo DOT
+            char arquivo_dot[50];
+            snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/grafo_impressao.dot");
+            gerar_arquivo_dot(grafo, arquivo_dot);
             break;
         }
-        case 'x':{
+        case 'x': {
             printf("      OPERACAO CANCELADA \n");
             break;
         }
         default:
             printf("Opcao invalida.\n");
-        
     }
 }
+
 
 // void menu(Grafo *grafo)
 void menu(Grafo *grafo){
@@ -287,6 +308,9 @@ int main(int argc,char **argv)
    
     // Processa a instância
     processar_instancia(&grafo, arquivo_entrada, output_file, op_direc, op_peso_aresta, op_peso_nos);
+
+    // Gerar imagem do grafo completo
+    // gerar_imagem_do_grafo(&grafo, "source/grafo.dot", "sourcegrafo.png");
 
     return 0;
 

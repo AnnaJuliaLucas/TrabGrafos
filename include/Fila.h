@@ -3,7 +3,6 @@
 
 #include "Defines.h"
 #include "No.h"
-
 typedef struct No_f{
     struct No_f *proximo;
     No *vertice;

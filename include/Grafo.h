@@ -21,6 +21,14 @@ typedef struct {
     int tamanho;
 } Fecho;
 
+typedef struct {
+    unsigned int numero_de_nos;
+    No *primeiro;
+} SubGrafo;
+
+void gerar_arquivo_dot(Grafo *grafo, const char *nome_arquivo);
+void gerar_imagem_do_grafo(Grafo *grafo, const char *nome_arquivo_dot, const char *nome_arquivo_img);
+
 void inicializar_grafo(Grafo *grafo);
 void inicializar_grafo_com_arquivo(Grafo *grafo, FILE *instance);
 void destruir_grafo(Grafo *grafo);
@@ -53,6 +61,10 @@ Grafo caminho_Floyd_Warshall(Grafo *grafo, unsigned int o, unsigned int d );
 Grafo AGM_Kruskal(Grafo grafo);
 Grafo AGM_Prim(Grafo grafo);
 int grafo_vazio(Grafo grafo);
+
+void unir(int *pais, int *rank, int x, int y);
+int encontrar(int *pais, int i);
+
 
 
 #endif // GRAFO_H

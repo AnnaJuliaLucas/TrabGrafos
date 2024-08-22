@@ -4,6 +4,31 @@
 #include "../include/Fila.h"
 #include "../include/Lista.h"
 
+void gerar_arquivo_dot(Grafo *grafo, const char *nome_arquivo) {
+    FILE *arquivo = fopen(nome_arquivo, "w");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir arquivo");
+        return;
+    }
+    
+    fprintf(arquivo, "digraph G {\n"); // Use "graph G" para grafos não direcionados
+    
+    No *no_atual = grafo->primeiro;
+    
+    while (no_atual != NULL) {
+        Aresta *aresta_atual = no_atual->primeira_aresta;
+        while (aresta_atual != NULL) {
+            fprintf(arquivo, "  %d -> %d [label=\"%.2f\"];\n",
+                    no_atual->id, aresta_atual->id_alvo, aresta_atual->peso);
+            aresta_atual = aresta_atual->prox_aresta;
+        }
+        no_atual = no_atual->proximo_no;
+    }
+    
+    fprintf(arquivo, "}\n");
+    fclose(arquivo);
+}
+
 
 
 // =============================================================================================================================================================================
@@ -292,7 +317,7 @@ void adicionar_no(Grafo *grafo, unsigned int  id_no, float peso)
         
         if(no_atual->id == id_no) // Se o nó já existe no grafo
         {
-            printf("Já existe o no %d\n",id_no);
+            //printf("Ja existe o no %d\n",id_no);
             return;
         }
         no_atual = no_atual->proximo_no; 
@@ -493,6 +518,7 @@ void imprimir_grafo(Grafo *grafo)
         }  
     }
 }
+
 
 
 /*====================================================== 
@@ -938,6 +964,9 @@ void imprimir_fecho(Grafo *grafo, unsigned int u, const char *tipo_str) {
     }
 }
 
+// =============================================================================================================================================================================
+//                                                                        ALGORITMOS GRAFO
+// =============================================================================================================================================================================
 
 /*======================================================
 *               CAMINHO MÍNIMO - DIJKSTRA
@@ -1035,6 +1064,8 @@ Grafo caminho_Dijkstra(Grafo *grafo, unsigned int o, unsigned int d ){
 
 }
 
+
+
 /*======================================================
 *                 CAMINHO MÍNIMO - FLOYD
 ---------------------------------------------------------
@@ -1050,83 +1081,92 @@ Grafo caminho_Floyd_Warshall(Grafo *grafo, unsigned int o, unsigned int d ){
     inicializar_grafo(&resposta);
     resposta.direcionado = grafo->direcionado;
     resposta.arestas_ponderadas = grafo->arestas_ponderadas;
-    
-    //Procura os nós do caminho
-    No *no_atual = encontrar_no_por_id(grafo,d);
-    if (no_atual==NULL){
+
+    // Verificação dos nós de origem e destino
+    No *no_atual = encontrar_no_por_id(grafo, d);
+    if (no_atual == NULL) {
         printf("Identificador de destino não encontrado no grafo.\n");
         return resposta;
     }
-    no_atual = encontrar_no_por_id(grafo,o);
-    if (no_atual==NULL){
+    no_atual = encontrar_no_por_id(grafo, o);
+    if (no_atual == NULL) {
         printf("Identificador de origem não encontrado no grafo.\n");
         return resposta;
     }
-    //Verificações
-    if (o==d){
+
+    // Verificações adicionais
+    if (o == d) {
         printf("Origem e destino iguais.\n");
         return resposta;
     }
-    
-    //montar a matriz de distâncias distancia
+
+    // Montar a matriz de distâncias e predecessores
     float distancia[grafo->numero_de_nos][grafo->numero_de_nos];
     int predecessor[grafo->numero_de_nos][grafo->numero_de_nos];
     
-    //Monta a matriz distancia com as distâncias iniciais com zero da diagonal principal e infinto no resto
-    for (unsigned int lin=0;lin<grafo->numero_de_nos;lin++)
-        for (unsigned int col=0;col<grafo->numero_de_nos;col++){
-            if (lin==col){
+    for (unsigned int lin = 0; lin < grafo->numero_de_nos; lin++) {
+        for (unsigned int col = 0; col < grafo->numero_de_nos; col++) {
+            if (lin == col) {
                 distancia[lin][col] = 0;
                 predecessor[lin][col] = lin;
-                
-            }else{
+            } else {
                 distancia[lin][col] = FLT_MAX;
                 predecessor[lin][col] = -1;
             }
         }
+    }
     
-    //Colocando as distâncias
     No *v_lin = grafo->primeiro;
     Aresta *v_col;
-    while (v_lin!=NULL){
+    while (v_lin != NULL) {
         v_col = v_lin->primeira_aresta;
-        while (v_col != NULL){
-            
-            distancia[v_lin->id-1][v_col->id_alvo-1] = v_col->peso;
-            predecessor[v_lin->id-1][v_col->id_alvo-1] = v_lin->id-1;
+        while (v_col != NULL) {
+            distancia[v_lin->id - 1][v_col->id_alvo - 1] = v_col->peso;
+            predecessor[v_lin->id - 1][v_col->id_alvo - 1] = v_lin->id - 1;
             v_col = v_col->prox_aresta;
         }
         v_lin = v_lin->proximo_no;
     }
     
-    //Método
-    for (unsigned int k=0;k<grafo->numero_de_nos;k++){
-        for (unsigned int i=0; i<grafo->numero_de_nos; i++){
-            for (unsigned int j=0; j<grafo->numero_de_nos; j++){
-                if (distancia[i][j] > distancia[i][k] + distancia[k][j]){
+    // Algoritmo de Floyd-Warshall
+    for (unsigned int k = 0; k < grafo->numero_de_nos; k++) {
+        for (unsigned int i = 0; i < grafo->numero_de_nos; i++) {
+            for (unsigned int j = 0; j < grafo->numero_de_nos; j++) {
+                if (distancia[i][j] > distancia[i][k] + distancia[k][j]) {
                     distancia[i][j] = distancia[i][k] + distancia[k][j];
                     predecessor[i][j] = predecessor[k][j];
                 }
             }
         }
     }
-    //Caminho:
-     if (predecessor[o-1][d-1] == -1){
-         return resposta;
-     }
-    
-    //inserindo os nós no grafo resposta
-    adicionar_no(&resposta,d,d);
-    No* atual = encontrar_no_por_id(grafo,d);
-    No* prev = encontrar_no_por_id(grafo,predecessor[o-1][d-1]+1);
-    while(atual->id!=o){
-        adicionar_no(&resposta,prev->id,prev->peso);
-        adicionar_aresta(&resposta,atual->id,prev->id,distancia[atual->id-1][prev->id-1]);
-        atual = prev;
-        prev = encontrar_no_por_id(grafo,predecessor[o-1][atual->id-1]+1);
+
+    // Reconstruir o caminho
+    if (predecessor[o - 1][d - 1] == -1) {
+        return resposta;
     }
+    
+    // Adicionar o nó de origem
+    adicionar_no(&resposta, o, 0);
+    No *atual = encontrar_no_por_id(grafo, d);
+    
+    // Adicionar todos os nós e arestas do caminho
+    while (atual->id != o) {
+        No *prev = encontrar_no_por_id(grafo, predecessor[o - 1][atual->id - 1] + 1);
+        if (prev == NULL) {
+            printf("Erro ao encontrar nó anterior.\n");
+            return resposta;
+        }
+        adicionar_no(&resposta, prev->id, 0);
+        adicionar_aresta(&resposta, prev->id, atual->id, distancia[prev->id - 1][atual->id - 1]);
+        atual = prev;
+    }
+    
+    // Adicionar o nó de destino
+    adicionar_no(&resposta, d, 0);
+
     return resposta;
 }
+
 
 /*======================================================
 *              VERIFICA SE ESTA ENTRE
@@ -1137,8 +1177,8 @@ Grafo caminho_Floyd_Warshall(Grafo *grafo, unsigned int o, unsigned int d ){
 * Retorno: 1 se o elemento está no vetor, 0 caso contrário
 ======================================================*/
 int esta_entre(unsigned int* vetor, unsigned int elemento){
-    int tam = sizeof(vetor) / sizeof(int);
-    for(int i=0;i<tam;i++){
+     int tam = sizeof(vetor) / sizeof(int);
+    for( int i=0;i<tam;i++){
         if (elemento==vetor[i])
             return 1;
     }
@@ -1154,42 +1194,39 @@ int esta_entre(unsigned int* vetor, unsigned int elemento){
 * Retorno: Grafo - árvore geradora mínima
 ======================================================*/
 Grafo AGM_Kruskal(Grafo grafo){
-
+    //Como detectar se o grafo não é
     if (grafo.numero_de_nos<3){
         return grafo;
     }
     //subs é um grafo que representa as subárvores
     Grafo subs;
     inicializar_grafo(&subs);
-
+    //AGM é para grafos não orientados
     if (grafo.direcionado){
+        printf("\tFalha! Esse eh um algoritmo para grafos nao direcionados\n");
+
         return subs;
     }
-    
     subs.arestas_ponderadas = grafo.arestas_ponderadas;
     subs.nos_ponderados = grafo.nos_ponderados;
+    
     //Copia os nós de grafo para subs
     No *no = grafo.primeiro;
-
     //Cria a lista de arestas ordenadas
     Lista *lista = cria_l(grafo);
-    mostra_l(*lista);
-    printf("\n");
+
     while (no!=NULL){
         adicionar_no(&subs,no->id, no->peso);
         subs.numero_de_nos++;
         no = no->proximo_no;
     }
-
     unsigned int contador = 0;
     No_l *aresta;
     Grafo fecho_o;
     Grafo fecho_d;
-
     while ((contador<grafo.numero_de_nos - 1) && (lista->tam>0)){
         aresta = remove_l(lista);
         fecho_o = caminho_Dijkstra(&subs, aresta->origem,aresta->destino);
-        fecho_d = caminho_Dijkstra(&subs, aresta->destino,aresta->origem);
 
         if (fecho_o.numero_de_nos==0 && fecho_d.numero_de_nos==0){
             adicionar_aresta(&subs,aresta->origem, aresta->destino,aresta->peso);
@@ -1197,8 +1234,17 @@ Grafo AGM_Kruskal(Grafo grafo){
             contador++;
         }
     }
+    if (contador<grafo.numero_de_nos - 1){
+        destruir_grafo(&subs);
+        inicializar_grafo(&subs);
+        printf("\tFalha! Esse eh um algoritmo para grafos conexos\n");
+    }
     return subs;
 }
+
+
+
+
 
 /*======================================================
 *        ÁRVORE GERADORA MÍNIMA - PRIM
@@ -1209,17 +1255,82 @@ Grafo AGM_Kruskal(Grafo grafo){
 * Retorno: Grafo - árvore geradora mínima
 ======================================================*/
 Grafo AGM_Prim(Grafo grafo){
-    if (grafo.numero_de_nos<3){
-        return grafo;
+    if (grafo.numero_de_nos < 3) {
+        return grafo;  // Retorna o grafo original se não há nós suficientes
     }
-    //Lista *lista = cria_l(grafo);
-    //Array de nós
+
+    // Inicializa o grafo que representará a árvore geradora mínima
     Grafo subs;
     inicializar_grafo(&subs);
-    subs.direcionado = grafo.direcionado;
+    
+    // Verifica se o grafo é direcionado, pois o algoritmo de Prim só funciona para grafos não direcionados
+    if (grafo.direcionado) {
+        printf("\tFalha. Esse é um algoritmo para grafos não direcionados.\n");
+        return subs;
+    }
+    
     subs.arestas_ponderadas = grafo.arestas_ponderadas;
     subs.nos_ponderados = grafo.nos_ponderados;
 
+    // Cria a lista de arestas ordenadas
+    Lista *lista = cria_l(grafo);
+    
+    // Remove a aresta de menor peso e insere na árvore
+    No_l *menorA = remove_l(lista);
+    adicionar_no(&subs, menorA->origem, menorA->origem);
+    adicionar_no(&subs, menorA->destino, menorA->destino);
+    adicionar_aresta(&subs, menorA->origem, menorA->destino, menorA->peso);
+    destroi_l(lista);
+    
+    // Cria um vetor para marcar os nós visitados
+    int *visitado = (int *)calloc(grafo.numero_de_nos, sizeof(int));
+    if (visitado == NULL) {
+        printf("Erro ao alocar memória para o vetor de visitados.\n");
+        return subs;
+    }
+    
+    // Marca o nó inicial como visitado
+    visitado[menorA->origem] = 1;
+
+    // Adiciona a aresta inicial ao grafo da árvore
+    lista = cria_l(subs);
+    No *no = encontrar_no_por_id(&grafo, menorA->origem);
+    Aresta *aresta = no->primeira_aresta;
+
+    while (aresta != NULL) {
+        insere_l(lista, *no, *aresta);
+        aresta = aresta->prox_aresta;
+    }
+    
+    unsigned int cont = 1;  // O nó inicial já foi visitado
+    while (cont < grafo.numero_de_nos) {
+        // Encontra a aresta de menor peso entre os nós visitados e não visitados
+        No_l *menorA = remove_l(lista);
+        if (menorA == NULL) break;  // Se não houver mais arestas, sai do loop
+        
+        if (!visitado[menorA->destino]) {
+            adicionar_no(&subs, menorA->origem, menorA->origem);
+            adicionar_no(&subs, menorA->destino, menorA->destino);
+            adicionar_aresta(&subs, menorA->origem, menorA->destino, menorA->peso);
+            visitado[menorA->destino] = 1;
+            cont++;
+        }
+        
+        // Adiciona as arestas conectadas ao novo nó visitado
+        no = encontrar_no_por_id(&grafo, menorA->destino);
+        aresta = no->primeira_aresta;
+
+        while (aresta != NULL) {
+            insere_l(lista, *no, *aresta);
+            aresta = aresta->prox_aresta;
+        }
+    }
+    
+    // Libera a memória
+    free(visitado);
+    destroi_l(lista);
     
     return subs;
 }
+//=================
+

@@ -63,7 +63,6 @@ No* remove_f(Fila *f){
     f->tam--;
     free(target);
     return vertice;
-    
 }
 
 
@@ -116,4 +115,21 @@ void destroi_f(Fila *f){
         target = f->head;
     }
     free(f);
+}
+
+
+/*======================================================
+*                     MOSTRA FILA
+--------------------------------------------------------
+* Função: Mostra a fila
+* Parametros: Fila f
+* Retorno: void
+======================================================*/
+void mostra_f(Fila f){
+    No_f *target = f.head;
+    while (target!=NULL){
+        printf("%d - ",target->vertice->id);
+        target = target->proximo;
+    }
+    printf("\n");
 }
