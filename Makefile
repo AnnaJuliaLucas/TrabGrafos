@@ -4,6 +4,7 @@ CC := gcc
 # Directories
 SRC_DIR := source
 INC_DIR := include
+DOT_DIR := $(SRC_DIR)/dot
 
 # Files
 SRCS := $(wildcard $(SRC_DIR)/*.c) main.c
@@ -33,3 +34,4 @@ $(MAIN_OBJ): main.c $(DEPS)
 clean:
 # @rm -f $(OBJS) $(MAIN_OBJ) $(TARGET) - incompatível com o Windows.  Trocado pelo cmd del, que é específico para o Windows
 	@del /Q $(OBJS) $(MAIN_OBJ) $(TARGET)
+	@for %%f in ($(DOT_DIR)\*.dot) do del "%%f"

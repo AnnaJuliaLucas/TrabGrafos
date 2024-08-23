@@ -22,6 +22,7 @@ void escolha(Grafo *grafo, char opcao)
             // Gerar arquivo DOT
             char arquivo_dot[50];
             snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/fecho_direto_%d.dot", vertice);
+            gerar_arquivo_dot(grafo, arquivo_dot);
             break;
         }
         case 'b': {
@@ -34,6 +35,7 @@ void escolha(Grafo *grafo, char opcao)
             // Gerar arquivo DOT
             char arquivo_dot[50];
             snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/fecho_indireto_%d.dot", vertice);
+            gerar_arquivo_dot(grafo, arquivo_dot);
             break;
         }
         case 'c': {
@@ -46,23 +48,21 @@ void escolha(Grafo *grafo, char opcao)
 
             Grafo g_dijkstra;
             g_dijkstra = caminho_Dijkstra(grafo, o, d);
-
             if (grafo_vazio(g_dijkstra)) {
-                exit(2);
                 printf("Nao ha caminho entre os nos pedidos\n");
-            } else {
-                exit(3);
-                printf("Menor Caminho -> \n");
-                imprimir_grafo(&g_dijkstra);
+                break;
+            } 
+            printf("Menor Caminho: \n");
+            imprimir_grafo(&g_dijkstra);
 
-                // Gerar arquivo DOT
-                char arquivo_dot[50];
-                snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/dijkstra_%d_%d.dot", o, d);
-            }
+            // Gerar arquivo DOT
+            char arquivo_dot[50];
+            snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/dijkstra_%d_%d.dot", o, d);
+            gerar_arquivo_dot(&g_dijkstra, arquivo_dot);
             break;
         }
         case 'd': {
-            printf("      Opcao escolhida: CAMINHO MINIMO DE FLOYD-WARSHALL \n");
+            printf("      Opcao escolhida: CAMINHO MINIMO DE FLOYD \n");
             int o, d;
             printf("\nEscolha um vertice de origem: ");
             scanf("%d", &o);
@@ -85,6 +85,23 @@ void escolha(Grafo *grafo, char opcao)
             }
             break;
         }
+        case 'e' :{
+            printf("      Opcao escolhida: ARVORE GERADORA DE PRIM \n");
+            Grafo g_Prim;
+            g_Prim = AGM_Prim(*grafo);
+            if(g_Prim.numero_de_nos == 0){
+                printf("Grafo vazio\n");
+                break;
+            } 
+            imprimir_grafo(&g_Prim);
+
+            // Gerar arquivo DOT
+            char arquivo_dot[50];
+            snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/prim.dot");
+            gerar_arquivo_dot(&g_Prim, arquivo_dot);
+            
+            break;
+        }
         case 'f': {
             printf("      Opcao escolhida: ARVORE GERADORA DE KRUSKAL \n");
             Grafo g_Kruskal;
@@ -95,14 +112,18 @@ void escolha(Grafo *grafo, char opcao)
                 // Gerar arquivo DOT
                 char arquivo_dot[50];
                 snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/kruskal.dot");
-                gerar_arquivo_dot(grafo, arquivo_dot);
+                gerar_arquivo_dot(&g_Kruskal, arquivo_dot);
             }
             break;
         }
         case 'g': {
-            printf("      Opcao escolhida: CAMINHAMENTO EM PROFUNDIDADE A PARTIR DE UM VERTICE \n");
-            // Implementar o código para caminhar em profundidade e gerar DOT
-            break;
+            printf("      Opcao escolhida: ARVORE DADA PELA ORDEM DE BUSCA EM PROFUNDIDADE A PARTIR DE UM NÓ \n");
+            printf("\nEscolha um vertice: ");
+            int vertice;
+            scanf("%d", &vertice);
+            
+        
+
         }
         //------ continuar daqui -----
         case 'j': {

@@ -27,7 +27,7 @@ typedef struct {
 } SubGrafo;
 
 void gerar_arquivo_dot(Grafo *grafo, const char *nome_arquivo);
-void gerar_imagem_do_grafo(Grafo *grafo, const char *nome_arquivo_dot, const char *nome_arquivo_img);
+void gerar_arquivo_dot_arvore_dfs(int *arvore_dfs, int num_arestas_arvore, int *arestas_retorno, int num_arestas_retorno, const char *nome_arquivo);
 
 void inicializar_grafo(Grafo *grafo);
 void inicializar_grafo_com_arquivo(Grafo *grafo, FILE *instance);
@@ -64,7 +64,6 @@ int grafo_vazio(Grafo grafo);
 
 void unir(int *pais, int *rank, int x, int y);
 int encontrar(int *pais, int i);
-
 
 
 #endif // GRAFO_H

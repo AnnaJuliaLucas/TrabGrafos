@@ -67,7 +67,7 @@ No* remove_f(Fila *f){
 
 
 /*======================================================
-*                     MOSTRA FILA
+*                     FILA VAZIA
 --------------------------------------------------------
 * Função: Mostra a fila
 * Parametros: Fila f      
@@ -91,6 +91,7 @@ int contem_f(Fila f,unsigned int id){
     while (target!=NULL){
         if (target->vertice->id == id)
             return 1;
+        target = target->proximo;
     }
     return 0;
 }

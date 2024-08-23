@@ -9,4 +9,10 @@ typedef struct Aresta {
     unsigned int id_alvo;
 }Aresta;
 
+typedef struct ArestaDFS {
+    unsigned int origem;
+    unsigned int destino;
+    struct ArestaDFS *prox_aresta;
+} ArestaDFS;
+
 #endif /* ARESTA_H */

@@ -12,7 +12,7 @@
 * Retorno: Void
 ======================================================*/
 void insere_l(Lista *l,No no, Aresta aresta){
-    No_l *novo = (No_l*)malloc(sizeof(No_l));
+    No_l* novo = (No_l*)malloc(sizeof(No_l));
     novo->origem = no.id;
     novo->destino = aresta.id_alvo;
     novo->peso = aresta.peso;
@@ -31,8 +31,13 @@ void insere_l(Lista *l,No no, Aresta aresta){
     while (atual->proximo!=NULL && atual->proximo->peso<aresta.peso){
         atual = atual->proximo;
     }
-    novo->proximo = atual->proximo;
-    atual->proximo = novo;
+    //Se a aresta já está em lista, não inclui
+    if (atual->proximo!=NULL && atual->proximo->peso==aresta.peso && atual->proximo->origem==no.id && atual->proximo->destino==aresta.id_alvo){
+        free(novo);
+    }else{
+        novo->proximo = atual->proximo;
+        atual->proximo = novo;
+    }
 }
 
 
