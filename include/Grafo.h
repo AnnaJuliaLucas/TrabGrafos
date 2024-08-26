@@ -3,6 +3,7 @@
 
 #include "Defines.h"
 #include "No.h"
+#include "Pilha.h"
 
 typedef struct No No;
 typedef struct Grafo {
@@ -20,11 +21,6 @@ typedef struct {
     int *vertices;
     int tamanho;
 } Fecho;
-
-typedef struct {
-    unsigned int numero_de_nos;
-    No *primeiro;
-} SubGrafo;
 
 void gerar_arquivo_dot(Grafo *grafo, const char *nome_arquivo);
 void gerar_arquivo_dot_arvore_dfs(int *arvore_dfs, int num_arestas_arvore, int *arestas_retorno, int num_arestas_retorno, const char *nome_arquivo);
@@ -57,13 +53,20 @@ void imprimir_fecho(Grafo *grafo, unsigned int u, const char *tipo_str);
 
 // Funções do caminho mínimo
 Grafo caminho_Dijkstra(Grafo *grafo, unsigned int o, unsigned int d );
-Grafo caminho_Floyd_Warshall(Grafo *grafo, unsigned int o, unsigned int d );
+Grafo caminho_Floyd(Grafo *grafo, unsigned int o, unsigned int d );
 Grafo AGM_Kruskal(Grafo grafo);
 Grafo AGM_Prim(Grafo grafo);
 int grafo_vazio(Grafo grafo);
 
+
 void unir(int *pais, int *rank, int x, int y);
 int encontrar(int *pais, int i);
+void articulacoes_DFS(Grafo *grafo, No *no_atual, bool visitado[], int disc[], int low[], unsigned int pai[], bool articulacao[]);
+void encontra_nos_articulacao(Grafo *grafo);
+void calcular_propriedades_grafo(Grafo *grafo);
 
+void adiciona_aresta_de_retorno(Grafo *entrada, Grafo *saida, unsigned int id);
+void recursao_do_encaminhamento(Grafo *entrada,Grafo *saida, No *no);
+Grafo caminhamento_Profundidade(Grafo *grafo, unsigned int o);
 
 #endif // GRAFO_H

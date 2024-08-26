@@ -10,5 +10,6 @@
 #include <unistd.h> /* manipulação de diretórios */
 #include <limits.h> /* constantes de limites de tipos inteiros */
 #include <float.h> /* constantes de limites de tipos de ponto flutuante */
+#include <stdbool.h> /* definição de tipos booleanos */
 
 #endif  // DEFINES_H

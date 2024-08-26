@@ -70,7 +70,7 @@ void escolha(Grafo *grafo, char opcao)
             scanf("%d", &d);
 
             Grafo g_floyd_warshall;
-            g_floyd_warshall = caminho_Floyd_Warshall(grafo, o, d);
+            g_floyd_warshall = caminho_Floyd(grafo, o, d);
 
             if (grafo_vazio(g_floyd_warshall)) {
                 printf("Nao ha caminho entre os nos pedidos\n");
@@ -117,13 +117,29 @@ void escolha(Grafo *grafo, char opcao)
             break;
         }
         case 'g': {
-            printf("      Opcao escolhida: ARVORE DADA PELA ORDEM DE BUSCA EM PROFUNDIDADE A PARTIR DE UM NÓ \n");
+            printf("      Opcao escolhida: CAMINHAMENTO EM PROFUNDIDADE \n");
             printf("\nEscolha um vertice: ");
             int vertice;
             scanf("%d", &vertice);
-            
-        
+            printf("\n");
+            Grafo resultado = caminhamento_Profundidade(grafo, vertice);
+            imprimir_grafo(&resultado);
 
+            // Gerar arquivo DOT
+            char arquivo_dot[50];
+            snprintf(arquivo_dot, sizeof(arquivo_dot), "source/dot/profundidade.dot");
+            gerar_arquivo_dot(&resultado, arquivo_dot);
+            break;
+        }
+        case 'h' : {
+            printf("      Opcao escolhida: PROPRIEDADES DO GRAFO \n");
+            calcular_propriedades_grafo(grafo);
+            break;
+        }
+        case 'i' :{
+            printf("      Opcao escolhida: CONJUNTO DE VERTICES DE ARTICULACAO \n");
+            encontra_nos_articulacao(grafo);
+            break;
         }
         //------ continuar daqui -----
         case 'j': {
@@ -155,9 +171,9 @@ void escolha(Grafo *grafo, char opcao)
             scanf("%d", &destino);
 
             if (conectado(grafo, origem, destino))
-                printf("\nOs vertices %d e %d sao conectados.\n", origem, destino);
+                printf("\nOs vertices %d e %d sao conectados\n", origem, destino);
             else
-                printf("\nOs vertices %d e %d nao sao conectados.\n", origem, destino);
+                printf("\nOs vertices %d e %d nao sao conectados\n", origem, destino);
 
             // Gerar arquivo DOT (se aplicável)
             break;
