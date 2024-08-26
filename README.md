@@ -1,7 +1,6 @@
 # TEORIA DOS GRAFOS - DCC059 
 
 ## Desenvolvido por:
-- **Grupo 5**
   > Anna Julia de Almeida Lucas
 
 ### Objetivo do trabalho:
