@@ -2,6 +2,7 @@
 
 ## Desenvolvido por:
   > Anna Julia de Almeida Lucas
+  > Mateus Alves da Silva 
 
 ### Objetivo do trabalho:
 Desenvolver um Tipo Abstrato de Dados - TAD ou uma Classe que represente grafos simples, orientados e não
