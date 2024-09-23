@@ -1,67 +1,61 @@
 # TEORIA DOS GRAFOS - DCC059 
 
-## Desenvolvido por:
+## Desenvolvido por
   > Anna Julia de Almeida Lucas
 
-### Objetivo do trabalho:
-Desenvolver um Tipo Abstrato de Dados - TAD ou uma Classe que represente grafos simples, orientados e não
-orientados, ponderados e não ponderados (nos vértices e arestas) e implemente o conjunto de funcionalidades
-apresentadas a seguir,
+  
 
-### Funcionalidades:
-• O programa deve apresentar em tela a saída para as seguintes funcionalidades definidas nas saídas
-conforme os parâmetros:
 
-a) Parâmetro: um ID de um vértice de um grafo direcionado
+
+## Índice
+1. [Primeiro Trabalho](1-trabalho.md)
+2. [Segundo Trabalho](2-trabalho.md)
+
+
+
+
+## 2º Trabalho
+• Objetivo: Estender seu Tipo Abstrato de Dados - TAD ou classe desenvolvidos no Trabalho 1 de forma a
+assegurar que represente grafos conforme sejam definidas as instâncias do problema. Para este
+trabalho, o TAD ou a Classe devem apresentar os seguintes algoritmos para o problema:
+
+
 ```
-Saída: o fecho transitivo direto deste vértice
+a) Algoritmo guloso
 ```
-b) Parâmetro: um ID de um vértice de um grafo direcionado;
+b) Algoritmo guloso randomizado adaptativo;
 ```
-Saída: o fecho transitivo indireto deste vértice
-```
-c) Parâmetro: dois IDs de vértices do grafo
-```
-Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Djkstra
-```
-d) Parâmetro: dois IDs de vértices do grafo
-```
-Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Floyd
-```
-e) Parâmetro: um subconjunto X de vértices do grafo
-```
-Saída: uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Prim
-```
-f) Parâmetro: um subconjunto X de vértices do grafo
-```
-Saída: uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Kruskal
-```
-g) Parâmetro: um ID de vértice;
-```
-Saída: a árvore dada pela ordem de caminhamento em profundidade a partir de nó dado parâmetro,
-destacando as arestas de retorno;
-```
-h) Parâmetro: o próprio grafo acíclico direcionado D;
-```
-Saída: uma ordenação topológica em D ou a informação de que D não é um grafo acíclico direcionado
-```
-i) Parâmetro: o grafo (direcionado ou não direcionado) ponderado nas arestas 
-```
-Saída: O raio, o diâmetro, o centro e a periferia do grafo
-```
-j) Parâmetro: o grafo não direcionado 
-```
-Saída: O conjunto de vértices de articulação
+c) Algoritmo guloso randomizado adaptativo reativo;
 ```
 
+Definição do Problema:
+• Grafo Não Direcionado: O problema é definido em um grafo não direcionado G=(V,E), onde
+V é o conjunto de vértices e E o conjunto de arestas.
+• Pesos nos Vértices: Cada vértice v∈V tem um peso associado wv, que é um valor numérico.
+Este peso pode, por exemplo, representar algum atributo do vértice, como altura, demanda ou
+custo.
+• Partição em Subgrafos: O objetivo do MGGPP é particionar o grafo em um número
+predefinido p de subgrafos conectados, ou seja, cada subgrafo resultante deve ser conexo e
+não pode ser um conjunto vazio de vértices. Todos os subgrafos devem ter, no mínimo, dois
+vértices.
+• Minimização da Diferença de Pesos (Gap): A característica principal do problema é minimizar
+a diferença, chamada de gap, entre o maior e o menor peso dentro de cada subgrafo. Para um
+subgrafo �!, o gap �"! é dado pela diferença entre o maior peso �"! e o menor peso �"! dentro
+do subgrafo. O objetivo é minimizar a soma dos gaps de todos os subgrafos, ou seja, minimizar
+∑ �"!
+#
+!$%
+
+Regras e Restrições:
+
+1. Número predefinido de subgrafos: O número de subgrafos p é fixo e definido a priori, com a
+restrição de que 1<p<n, onde n é o número total de vértices do grafo.
+2. Subgrafos Conectados: Todos os subgrafos devem ser conectados, ou seja, deve haver um
+caminho entre qualquer par de vértices dentro do mesmo subgrafo.
+3. Vértices Desconectados: O problema considera que os subgrafos resultantes não podem ser
+desconexos ou compostos por apenas um vértice.
+4. Minimização do Gap Total: O objetivo é minimizar a soma dos gaps em todos os subgrafos
+da partição, visando obter subgrafos cujas distribuições de pesos sejam o mais homogêneas
+possível.
 ## EXECUÇÃO 
 Para executar o programa:
-```
-grafo <arquivo_entrada> <arquivo_saida> <Opc_Direc> <Opc_Peso_Aresta> <Opc_Peso_Nos>->
-```
-
-Exemplo de uso:
-```
-grafo 5nD_2.dat source/output/  0 1 0
-```
-

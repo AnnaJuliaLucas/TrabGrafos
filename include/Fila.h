@@ -3,6 +3,8 @@
 
 #include "Defines.h"
 #include "No.h"
+#include "Defines.h"
+#include "No.h"
 typedef struct No_f{
     struct No_f *proximo;
     No *vertice;
@@ -22,4 +24,4 @@ int contem_f(Fila f,unsigned int id);
 void destroi_f(Fila *f);
 void mostra_f(Fila f);
 
-#endif // Fila_h 
+#endif /* Fila_h */

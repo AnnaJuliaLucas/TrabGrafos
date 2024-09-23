@@ -1,9 +1,9 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
-#include "Defines.h"
-#include "No.h"
-#include "Pilha.h"
+#include "../include/Defines.h"
+#include "../include/No.h"
+#include "../include/Pilha.h"
 
 typedef struct No No;
 typedef struct Grafo {
@@ -15,6 +15,7 @@ typedef struct Grafo {
   No *primeiro;
   No *ultimo;
   No **adj;
+  int **matriz_adjacencia;
 
 } Grafo;
 typedef struct {
@@ -58,7 +59,6 @@ Grafo AGM_Kruskal(Grafo grafo);
 Grafo AGM_Prim(Grafo grafo);
 int grafo_vazio(Grafo grafo);
 
-
 void unir(int *pais, int *rank, int x, int y);
 int encontrar(int *pais, int i);
 void articulacoes_DFS(Grafo *grafo, No *no_atual, bool visitado[], int disc[], int low[], unsigned int pai[], bool articulacao[]);
@@ -68,5 +68,7 @@ void calcular_propriedades_grafo(Grafo *grafo);
 void adiciona_aresta_de_retorno(Grafo *entrada, Grafo *saida, unsigned int id);
 void recursao_do_encaminhamento(Grafo *entrada,Grafo *saida, No *no);
 Grafo caminhamento_Profundidade(Grafo *grafo, unsigned int o);
+
+
 
 #endif // GRAFO_H

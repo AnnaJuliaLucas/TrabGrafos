@@ -10,6 +10,8 @@
         "no.h": "c",
         "fila.h": "c",
         "limits.h": "c",
-        "lista.h": "c"
+        "lista.h": "c",
+        "stdbool.h": "c",
+        "pilha.h": "c"
     }
 }

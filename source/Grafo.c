@@ -1581,6 +1581,8 @@ void calcular_propriedades_grafo(Grafo *grafo) {
         }
     }
     printf("\n");
+
+
 }
 
 

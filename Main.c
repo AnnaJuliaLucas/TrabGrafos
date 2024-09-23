@@ -1,4 +1,5 @@
 #include "../include/Grafo.h"
+#include "../include/Algoritmos_Gulosos.h"
 #include "Defines.h" // Include the missing header file
 
 /*====================================================== 
@@ -9,7 +10,7 @@
 * Retorno: void
 * ======================================================*/
 // Atualize a função escolha
-void escolha(Grafo *grafo, char opcao)
+void escolha1(Grafo *grafo, char opcao)
 {
     switch (opcao) {
         case 'a': {
@@ -141,7 +142,7 @@ void escolha(Grafo *grafo, char opcao)
             encontra_nos_articulacao(grafo);
             break;
         }
-        //------ continuar daqui -----
+        //------ -----
         case 'j': {
             printf("      Opcao escolhida: REMOVER ARESTA \n");
             printf("\nEscolha um vertice de origem: ");
@@ -197,10 +198,45 @@ void escolha(Grafo *grafo, char opcao)
     }
 }
 
+void escolha2(Grafo *grafo, char opcao, int p)
+{
+    (void)p;  
 
-// void menu(Grafo *grafo)
-void menu(Grafo *grafo){
-    char opcao;	
+    switch (opcao) {
+        case 'a' : {
+            printf("      Opcao escolhida: ALGORITMO GULOSO \n");
+            Grafo resposta = MGGPP_guloso(grafo,p);
+            //imprimir_grafo(&resposta);
+            break;
+        }
+        case 'b' : {
+            printf("      Opcao escolhida: ALGORITMO GULOSO RANDOMIZADO\n");
+
+            break;
+        }
+        case 'C' : {
+            printf("      Opcao escolhida: ALGORITMO GULOSO RANDOMIZADO REATIVO\n");
+
+            break;
+        }
+        
+        case 'z': {
+            printf("      Opcao escolhida: IMPRIMIR GRAFO \n\n");
+            imprimir_grafo(grafo);
+            break;
+        }
+        case 'x':{
+            printf("      OPERACAO CANCELADA \n");
+            break;
+        }
+        default:
+            printf("Opcao invalida.\n");
+        
+    }
+}
+
+void menu1(Grafo *grafo){
+    char opcao2;	
     
     printf("\n======================= MENU  ======================= \n");
     printf("a) Fecho Transitivo Direto\n");
@@ -217,22 +253,37 @@ void menu(Grafo *grafo){
     printf("l) Verificar conectividade entre dois nos\n");
     printf("m) Imprimir grafo\n");
     printf("X) SAIR\n");
-    printf("\n Escolha uma opcao (a-i): ");
-    scanf(" %c", &opcao);
+    printf("\n Escolha uma opcao (a-m): ");
+    scanf(" %c", &opcao2);
     printf("===================================================== \n");
-    escolha(grafo,opcao);
+    escolha1(grafo,opcao2);
 
-    do{
+    while (opcao2 != 'x' && opcao2 != 'X') {
         printf("===================================================== \n");
         printf("Faca uma nova escolha: ");
-        scanf(" %c", &opcao); 
+        scanf(" %c", &opcao2); 
         printf("\n");
-        escolha(grafo,opcao);
-    } while(opcao != 'x' && opcao != 'X');
+        escolha1(grafo,opcao2);
+    } 
 }
 
+void menu2(Grafo *grafo,int p){
+    char opcao2;	
+    
+    printf("\n======================= MENU  ======================= \n");
+    printf("a) Solucao por Algoritmo Guloso\n");
+    printf("b) Solucao por Algoritmo Guloso Randomizado\n");
+    printf("c) Solucao por Algoritmo Guloso Randomizado Reativo\n");
+    printf("z) Imprimir Grafo\n");
+    printf("X) SAIR\n");
+    printf("\n Escolha uma opcao (a-c): ");
+    scanf(" %c", &opcao2);
+    printf("===================================================== \n");
+    escolha2(grafo,opcao2,p);
 
-void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *diretorio_saida, int op_direc, int op_peso_aresta, int op_peso_nos) {
+}
+    
+void processar_instancia1(Grafo *grafo, const char *nome_arquivo, const char *diretorio_saida, int op_direc, int op_peso_aresta, int op_peso_nos) {
     printf("\nINSTANCIA: %s\n", nome_arquivo);
   
     // Extrair apenas o nome do arquivo de entrada (sem o caminho)
@@ -247,8 +298,8 @@ void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *dir
     printf("ARQUIVO DE SAIDA: %s\n", nome_arquivo_saida);
 
     // Concatena o diretório de instâncias com o nome do arquivo
-    char caminho_arquivo[strlen("instances_example/") + strlen(nome_arquivo) + 1]; // +1 para o caractere nulo
-    strcpy(caminho_arquivo, "instances_example/");
+    char caminho_arquivo[strlen("instances_example/Trab1/") + strlen(nome_arquivo) + 1]; // +1 para o caractere nulo
+    strcpy(caminho_arquivo, "instances_example/Trab1/");
     strcat(caminho_arquivo, nome_arquivo);
 
     // Abre o arquivo de instância
@@ -317,37 +368,83 @@ void processar_instancia(Grafo *grafo, const char *nome_arquivo, const char *dir
     imprimir_grafo_em_arquivo(grafo, output_file);
 
     // Chama MENU do Grafo
-    menu(grafo);
+    menu1(grafo);
 
     // Fechar os arquivos
     fclose(input_file);
     fclose(output_file); 
 }
 
+void processar_instancia2( Grafo *grafo, const char *nome_arquivo) {
+    //Parâmetros fixos
+    char numero[4];
+    for (int i=1;i<4;i++){
+        numero[i-1]=nome_arquivo[i];
+    }
+    numero[3]='\0';
+    grafo->numero_de_nos = (size_t)atoi(numero);
+    grafo->arestas_ponderadas = 0;
+    grafo->nos_ponderados = 1;
+    grafo->direcionado = 0;
+    int p;
+    
+    printf("\nINSTANCIA: %s\n", nome_arquivo);
+    
+    // Concatena o diretório de instâncias com o nome do arquivo
+    char caminho_arquivo[strlen("instances_example/Trab2/") + strlen(nome_arquivo) + 1]; // +1 para o caractere nulo
+    strcpy(caminho_arquivo, "instances_example/Trab2/");
+    strcat(caminho_arquivo, nome_arquivo);
+    
+    // Abre o arquivo de instância
+    FILE *input_file = fopen(caminho_arquivo, "r");
+    if (input_file == NULL) {
+        printf("Erro ao abrir o arquivo de instancia %s.\n",caminho_arquivo);
+        return ;
+    }
+    p = inicializar_grafo_MGGPP(grafo, input_file);
+    
+    // Chama MENU do Grafo
+    menu2(grafo,p);
+    
+    // Fechar os arquivos
+    fclose(input_file);
+}
+
 // argc: número de argumentos passados para o programa
 // argv: vetor de strings com os argumentos passados para o programa
 int main(int argc,char **argv) 
 {
-    // Verifica os argumentos passados
-    if (argc < 6) {
-        printf(" PADRAO: %s <arquivo_entrada> <output_file> <Op_Direc> <Op_PesoAresta> <Op_PesoNos>\n", argv[0]);
-        return 1;
+    if (argc == 6)
+    {
+        Grafo grafo;
+
+        // Lendo argumentos
+        char *arquivo_entrada = argv[1];
+        char *output_file = argv[2];
+        int op_direc = atoi(argv[3]);
+        int op_peso_aresta = atoi(argv[4]);
+        int op_peso_nos = atoi(argv[5]);
+
+        // Processa a instância
+        processar_instancia1(&grafo, arquivo_entrada, output_file, op_direc, op_peso_aresta, op_peso_nos);
+
     }
+    else if(argc == 2)
+    {
+        Grafo grafo;
 
-    Grafo grafo;
-
-    // Lendo argumentos
-    char *arquivo_entrada = argv[1];
-    char *output_file = argv[2];
-    int op_direc = atoi(argv[3]);
-    int op_peso_aresta = atoi(argv[4]);
-    int op_peso_nos = atoi(argv[5]);
-   
-    // Processa a instância
-    processar_instancia(&grafo, arquivo_entrada, output_file, op_direc, op_peso_aresta, op_peso_nos);
-
-    // Gerar imagem do grafo completo
-    // gerar_imagem_do_grafo(&grafo, "source/grafo.dot", "sourcegrafo.png");
+        // Lendo argumentos
+        char *arquivo_entrada = argv[1];
+        
+        // Processa a instância
+        processar_instancia2(&grafo, arquivo_entrada);
+    }
+    else
+    {
+        printf("Numero de argumentos invalido\n");
+        printf("Uso para o 1º Trab: %s <arquivo_entrada> <output_file> <op_direc> <op_peso_aresta> <op_peso_nos>\n", argv[0]);
+        printf("Uso para o 2º Trab: %s <arquivo_entrada>\n", argv[0]);
+    }
 
     return 0;
 

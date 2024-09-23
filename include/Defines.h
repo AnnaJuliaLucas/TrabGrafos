@@ -11,5 +11,6 @@
 #include <limits.h> /* constantes de limites de tipos inteiros */
 #include <float.h> /* constantes de limites de tipos de ponto flutuante */
 #include <stdbool.h> /* definição de tipos booleanos */
+#include <time.h> /* manipulação de tempo */
 
 #endif  // DEFINES_H
