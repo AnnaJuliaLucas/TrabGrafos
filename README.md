@@ -4,7 +4,7 @@ Este repositório contém os trabalhos práticos da disciplina Teoria dos Grafos
 ## 📚 Índice de Trabalhos
 Cada trabalho traz uma exploração de diferentes aspectos da Teoria dos Grafos. Clique nos links abaixo para acessar a descrição completa:
 
- [Primeiro Trabalho](1-trabalho.md) : Uma introdução ao mundo dos grafos: implementações básicas Dijkstra, Kruskal, Prim, e suas aplicações.
+ [Primeiro Trabalho](1-trabalho.md) : Uma introdução ao mundo dos grafos - implementações básicas Dijkstra, Kruskal, Prim, e suas aplicações.
   
  [Segundo Trabalho](2-trabalho.md): Exploração de algoritmos gulosos e suas implementações práticas.
 
